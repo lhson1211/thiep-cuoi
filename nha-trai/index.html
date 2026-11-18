@@ -594,9 +594,19 @@ setVersion(fromHash());
     ev.preventDefault();
     var n=nameI.value.trim(), m=wishI.value.trim();
     if(!n||!m){ msg.className='gb-msg err'; msg.textContent='Vui lòng nhập tên và lời chúc.'; return; }
-    var now=new Date(), t=now.toLocaleDateString('vi-VN')+' '+now.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
-    items.unshift({n:n,m:m,t:t}); save(items); render(items);
-    wishI.value=''; msg.className='gb-msg'; msg.textContent='Cảm ơn bạn đã gửi lời chúc! Lời chúc được lưu trên thiết bị này.';
+    var btn=document.querySelector('.gb-send'), URL_='https://script.google.com/macros/s/AKfycbzYBUijgTHJHzYvqU7VayiN7afK-Qe7itsV9HDK-Oxo04QdsauRmWizXdCqZcWUC6Gy/exec', SIDE='trai'==='gai'?'Nhà gái':'Nhà trai';
+    function done(sent){
+      var now=new Date(), t=now.toLocaleDateString('vi-VN')+' '+now.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});
+      items.unshift({n:n,m:m,t:t}); save(items); render(items);
+      wishI.value=''; msg.className='gb-msg';
+      msg.textContent=sent?'Cảm ơn bạn đã gửi lời chúc! Lời chúc của bạn đã được gửi tới gia đình.':'Cảm ơn bạn đã gửi lời chúc! Lời chúc được lưu trên thiết bị này.';
+    }
+    if(!URL_){ done(false); return; }
+    btn.disabled=true; msg.className='gb-msg'; msg.textContent='Đang gửi...';
+    var body=new URLSearchParams(); body.set('type','wish'); body.set('name',n); body.set('wish',m); body.set('side',SIDE);
+    fetch(URL_,{method:'POST',mode:'no-cors',body:body}).then(function(){ btn.disabled=false; done(true); },function(){
+      btn.disabled=false; msg.className='gb-msg err'; msg.textContent='Chưa gửi được lời chúc. Vui lòng kiểm tra kết nối mạng và thử lại.';
+    });
   });
 })();
 
