@@ -649,7 +649,7 @@ setVersion(fromHash());
 /* Nhạc nền + màn hình mở thiệp */
 (function(){
   var a=document.getElementById('bgm'), b=document.getElementById('mus'), want=false;
-  var TARGET=.2, fadeT=null;
+  var TARGET=.1, fadeT=null;
   a.volume=0;
   function fade(){ clearInterval(fadeT); var t0=Date.now(); a.volume=0; fadeT=setInterval(function(){ var k=Math.min(1,(Date.now()-t0)/5000); a.volume=TARGET*k; if(k>=1) clearInterval(fadeT); },100); }
   function stopFade(){ clearInterval(fadeT); }
